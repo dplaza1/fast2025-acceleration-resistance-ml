@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
+import os
 
 # Constants
 g = 9.81
@@ -45,10 +46,8 @@ if predict_button:
             scaler_X1 = joblib.load('scaler_X1.pkl')
             scaler_X2 = joblib.load('scaler_X2.pkl')
 
-            # Precomputed constants
             C_delta = disp / (w * beam ** 3)
             H13_B = h13 / beam
-
             results = []
 
             for v_knots, tau in zip(speeds, tau_list):
@@ -68,7 +67,11 @@ if predict_button:
                     "Trim [deg]": round(tau, 2),
                     "Froude Number (Fn)": round(Fn, 3),
                     "Predicted nCG [g]": round(pred_ncg, 3),
-                    "Predicted nBow [g]": round(pred_nbow, 3)
+                    "Predicted nBow [g]": round(pred_nbow, 3),
+                    "Beta [deg]": beta,
+                    "Cv": C_delta,
+                    "LCG [%L]": lcg_pct,
+                    "H1/3 / B": H13_B
                 })
 
             df_results = pd.DataFrame(results)
@@ -81,13 +84,18 @@ if predict_button:
                 csv = df_results.to_csv(index=False).encode('utf-8')
                 st.download_button("Download CSV", csv, "predictions.csv", "text/csv")
 
+            # Save correlations CSV
+            df_corr = df_results[['Beta [deg]', 'Cv', 'LCG [%L]', 'Trim [deg]', 'Froude Number (Fn)', 'H1/3 / B', 'Predicted nCG [g]', 'Predicted nBow [g]']]
+            correlation_matrix = df_corr.corr()
+            correlation_matrix.to_csv("correlation_outputs.csv")
+
             with col1:
                 st.header("Hydro Coefficients")
                 st.write(f"**Displacement Coefficient (CΔ)**: {C_delta:.3f}")
                 st.write(f"**LCG [%L]**: {lcg_pct:.2f}")
                 st.write(f"**H1/3 to Beam Ratio (H1/3/B)**: {H13_B:.3f}")
 
-            # 📊 Graphs in 2 side-by-side columns with controlled size
+            # 📊 Graphs
             st.header("Graphs")
             speeds_np = np.array([row["Speed [knots]"] for row in results])
             ncg_np = np.array([row["Predicted nCG [g]"] for row in results])
@@ -119,4 +127,3 @@ if predict_button:
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
-
