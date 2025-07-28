@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
+import altair as alt  # Para gráficos tipo scatter
 
 # Constants
 g = 9.81
@@ -91,15 +92,29 @@ if predict_button:
 
                 df_plot = df_results.copy()
                 df_plot["Speed [knots]"] = pd.to_numeric(df_plot["Speed [knots]"], errors="coerce")
-                df_plot = df_plot.dropna(subset=["Speed [knots]"])
-                df_plot = df_plot.sort_values("Speed [knots]")
-                df_plot.set_index("Speed [knots]", inplace=True)
+                df_plot["Predicted nCG [g]"] = pd.to_numeric(df_plot["Predicted nCG [g]"], errors="coerce")
+                df_plot["Predicted nBow [g]"] = pd.to_numeric(df_plot["Predicted nBow [g]"], errors="coerce")
 
-                if len(df_plot) >= 2:
-                    st.line_chart(df_plot[["Predicted nCG [g]"]], use_container_width=True)
-                    st.line_chart(df_plot[["Predicted nBow [g]"]], use_container_width=True)
+                df_plot = df_plot.dropna(subset=["Speed [knots]", "Predicted nCG [g]", "Predicted nBow [g]"])
+                df_plot = df_plot.sort_values("Speed [knots]")
+
+                if len(df_plot) >= 1:
+                    chart_ncg = alt.Chart(df_plot).mark_point(filled=True, size=80, color='steelblue').encode(
+                        x=alt.X('Speed [knots]:Q'),
+                        y=alt.Y('Predicted nCG [g]:Q'),
+                        tooltip=['Speed [knots]', 'Predicted nCG [g]']
+                    ).properties(title="Predicted nCG vs Speed", height=300)
+
+                    chart_nbow = alt.Chart(df_plot).mark_point(filled=True, size=80, color='orange').encode(
+                        x=alt.X('Speed [knots]:Q'),
+                        y=alt.Y('Predicted nBow [g]:Q'),
+                        tooltip=['Speed [knots]', 'Predicted nBow [g]']
+                    ).properties(title="Predicted nBow vs Speed", height=300)
+
+                    st.altair_chart(chart_ncg, use_container_width=True)
+                    st.altair_chart(chart_nbow, use_container_width=True)
                 else:
-                    st.warning("At least 2 points are required to display line charts.")
+                    st.warning("Please enter at least one valid speed and prediction to show graphs.")
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
