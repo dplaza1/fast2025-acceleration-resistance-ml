@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
-import altair as alt
+import matplotlib.pyplot as plt  
 
 # Constants
 g = 9.81
@@ -87,43 +87,30 @@ if predict_button:
                 st.write(f"**LCG [%L]**: {lcg_pct:.2f}")
                 st.write(f"**H1/3 to Beam Ratio (H1/3/B)**: {H13_B:.3f}")
 
-            # Charts (outside columns to avoid layout bugs)
-            with st.container():
-                st.header("Graphs")
+            
+            st.header("Graphs")
 
-                df_plot = df_results.copy()
-                df_plot["Speed [knots]"] = pd.to_numeric(df_plot["Speed [knots]"], errors="coerce")
-                df_plot["Predicted nCG [g]"] = pd.to_numeric(df_plot["Predicted nCG [g]"], errors="coerce")
-                df_plot["Predicted nBow [g]"] = pd.to_numeric(df_plot["Predicted nBow [g]"], errors="coerce")
+            speeds_np = np.array([row["Speed [knots]"] for row in results])
+            ncg_np = np.array([row["Predicted nCG [g]"] for row in results])
+            nbow_np = np.array([row["Predicted nBow [g]"] for row in results])
 
-                df_plot = df_plot.dropna(subset=["Speed [knots]", "Predicted nCG [g]", "Predicted nBow [g]"])
-                df_plot = df_plot.sort_values("Speed [knots]")
+            # nCG scatter
+            fig1, ax1 = plt.subplots()
+            ax1.scatter(speeds_np, ncg_np, color='blue', label="nCG")
+            ax1.set_xlabel("Speed [knots]")
+            ax1.set_ylabel("nCG [g]")
+            ax1.set_title("Predicted nCG vs Speed")
+            ax1.grid(True)
+            st.pyplot(fig1)
 
-                if len(df_plot) >= 1:
-                    chart_ncg = alt.Chart(df_plot).mark_point(filled=True, size=80, color='steelblue').encode(
-                        x=alt.X('Speed [knots]:Q'),
-                        y=alt.Y('Predicted nCG [g]:Q'),
-                        tooltip=['Speed [knots]', 'Predicted nCG [g]']
-                    ).properties(
-                        title="Predicted nCG vs Speed",
-                        width=600,
-                        height=300
-                    )
-
-                    chart_nbow = alt.Chart(df_plot).mark_point(filled=True, size=80, color='orange').encode(
-                        x=alt.X('Speed [knots]:Q'),
-                        y=alt.Y('Predicted nBow [g]:Q'),
-                        tooltip=['Speed [knots]', 'Predicted nBow [g]']
-                    ).properties(
-                        title="Predicted nBow vs Speed",
-                        width=600,
-                        height=300
-                    )
-
-                    st.altair_chart(chart_ncg)
-                    st.altair_chart(chart_nbow)
-                else:
-                    st.warning("Please enter at least one valid speed and prediction to show graphs.")
+            # nBow scatter
+            fig2, ax2 = plt.subplots()
+            ax2.scatter(speeds_np, nbow_np, color='orange', label="nBow")
+            ax2.set_xlabel("Speed [knots]")
+            ax2.set_ylabel("nBow [g]")
+            ax2.set_title("Predicted nBow vs Speed")
+            ax2.grid(True)
+            st.pyplot(fig2)
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
