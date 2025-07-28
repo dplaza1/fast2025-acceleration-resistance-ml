@@ -10,7 +10,7 @@ knots_to_ms = 0.514444
 m_to_ft = 3.28084
 
 st.set_page_config(layout="wide")
-st.title("Prediction of nCG and nBow for Planing Hulls (Physical Inputs)")
+st.title("Prediction of nCG and nBow for Planing Hulls ")
 
 col1, col2 = st.columns(2)
 
