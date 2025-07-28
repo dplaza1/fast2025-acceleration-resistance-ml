@@ -24,11 +24,11 @@ with col1:
     lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=42.0)
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
-    st.markdown("Enter a list of **speeds [knots]** (e.g. `24.5, 25.0, 26.2`):")
-    speed_input = st.text_input("Speed list (V [knots])")
+    st.markdown("Enter a list of **speeds [knots]** : ")
+    speed_input = st.text_input("Speed list (V [knots])", value="24.5, 25.0, 26.2")
 
-    st.markdown("Enter the corresponding **trim angles [deg]** (e.g. `3.0, 3.4, 3.6`):")
-    trim_input = st.text_input("Trim list (τ [deg])")
+    st.markdown("Enter the corresponding **trim angles [deg]** : ")
+    trim_input = st.text_input("Trim list (τ [deg])", value="3.0, 3.4, 3.6")
 
     predict_button = st.button("Predict")
 
