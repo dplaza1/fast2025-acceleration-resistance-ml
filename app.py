@@ -34,7 +34,7 @@ with col1:
     coeff_data = {
         "Variable":      ["L/B [-]",    "β [°]",        "CΔ [-]",    "LCG [%L]",  "τ [°]",         "H1/3/B [-]"],
         "Value":         [f"{L_B:.3f}",  f"{beta:.1f}", f"{C_delta:.3f}", f"{lcg_pct:.1f}", "–", f"{H13_B:.3f}"],
-        "Min–Max Range": ["4.000–9.000","10.0–30.0","0.384–1.200","28.6–45.7","2.0–9.2","0.215–0.750"],
+        "Min–Max Range": ["4 – 9","10 – 30","0.384 – 1.20","28.6 – 45.7","2.0 – 9.2","0.215 – 0.750"],
     }
     df_coeff = pd.DataFrame(coeff_data)
     st.table(df_coeff)
