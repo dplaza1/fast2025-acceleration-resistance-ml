@@ -25,10 +25,10 @@ with col1:
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
     st.markdown("Enter a list of **speeds [knots]** : ")
-    speed_input = st.text_input("Speed list (V [knots])", value="24.5, 25.0, 26.2")
+    speed_input = st.text_input("Speed list (V [knots])", value="25.4, 38.1, 50.8")
 
     st.markdown("Enter the corresponding **trim angles [deg]** : ")
-    trim_input = st.text_input("Trim list (τ [deg])", value="3.0, 3.4, 3.6")
+    trim_input = st.text_input("Trim list (τ [deg])", value="3.6, 3.5, 5.7")
 
     predict_button = st.button("Predict")
 
@@ -106,8 +106,8 @@ if predict_button:
             with g1:
                 fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ax1.scatter(speeds_np, ncg_np, color='blue')
-                ax1.set_xlabel("Speed [knots]", fontsize=8)
-                ax1.set_ylabel("nCG [g]", fontsize=8)
+                ax1.set_xlabel("Speed [knots]", fontsize=7)
+                ax1.set_ylabel("nCG [g]", fontsize=7)
                 ax1.set_title("nCG vs Speed", fontsize=8)
                 ax1.tick_params(axis='both', labelsize=8)
                 ax1.grid(True)
@@ -117,10 +117,10 @@ if predict_button:
             with g2:
                 fig2, ax2 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ax2.scatter(speeds_np, nbow_np, color='orange')
-                ax2.set_xlabel("Speed [knots]", fontsize=8)
-                ax2.set_ylabel("nBow [g]", fontsize=8)
-                ax2.set_title("nBow vs Speed", fontsize=8)
-                ax2.tick_params(axis='both', labelsize=8)
+                ax2.set_xlabel("Speed [knots]", fontsize=7)
+                ax2.set_ylabel("nBow [g]", fontsize=7)
+                ax2.set_title("nBow vs Speed", fontsize=7)
+                ax2.tick_params(axis='both', labelsize=7)
                 ax2.grid(True)
                 fig2.tight_layout()
                 st.pyplot(fig2)
