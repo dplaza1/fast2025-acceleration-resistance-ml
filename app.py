@@ -1,53 +1,74 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import joblib
 
-# App title
-st.title("Prediction of nCG and nBow for Planing Hulls")
+# Constants
+g = 9.81  # gravity (m/s^2)
+w = 1025  # specific weight of water (kg/m^3)
+knots_to_ms = 0.514444  # conversion factor knots to m/s
+
+st.title("Prediction of nCG and nBow for Planing Hulls (Physical Inputs)")
 
 st.markdown("""
-This app predicts vertical acceleration (nCG) and added resistance (nBow) for planing hulls using machine learning models.
-Simply enter the initial parameters. The app will first predict nCG and then automatically use that value to predict nBow.
+Enter the physical parameters of the vessel and sea state. The app will calculate the required coefficients and predict nCG and nBow.
 """)
 
-# Load models and scalers
-gpr_ncg_model = joblib.load('gpr_ncg_model.pkl')
-etr_nbow_model = joblib.load('etr_nbow_model.pkl')
-scaler_X1 = joblib.load('scaler_X1.pkl')
-scaler_X2 = joblib.load('scaler_X2.pkl')
+# User physical inputs
+st.header("Input Ship and Wave Parameters")
 
-# User input section
-st.header("Enter ship and wave parameters")
-
-beta = st.number_input("Beta [deg]", min_value=5.0, max_value=45.0, value=20.0)
-cv = st.number_input("Cv [-]", min_value=0.8, value=1.3)
-lcg = st.number_input("LCG [%L]", min_value=20.0, max_value=50.0, value=38.0)
-tao = st.number_input("Tao [deg]", min_value=1.0, value=3.6)
-h13b = st.number_input("H1/3/b", min_value=0.10, value=0.43)
-fn = st.number_input("Froude Number [-]", min_value=0.4, value=1.0)  # This is only used for nCG
+beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=20.0)
+disp = st.number_input("Displacement, Δ [kg]", min_value=1000.0, value=15000.0)
+beam = st.number_input("Chine beam, B [m]", min_value=1.0, value=5.0)
+L = st.number_input("Ship length, L [m]", min_value=5.0, value=30.0)
+lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=38.0)
+tau = st.number_input("Trim angle, τ [deg]", min_value=0.0, value=3.0)
+v_knots = st.number_input("Ship speed, V [knots]", min_value=1.0, value=20.0)
+h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.1, value=1.0)
 
 if st.button("Predict"):
-    # Predict nCG (requires fn)
-    X1 = np.array([[beta, cv, lcg, tao, fn, h13b]])
+    # Convert inputs
+    v = v_knots * knots_to_ms  # Convert knots to m/s
+
+    # Compute coefficients
+    C_delta = disp / (w * beam ** 3)
+    Fn = v / np.sqrt(g * L)
+    H13_B = h13 / beam
+
+    # Show calculated coefficients
+    st.markdown("**Calculated Coefficients:**")
+    st.write(f"Displacement Coefficient (CΔ): {C_delta:.3f}")
+    st.write(f"LCG [%L]: {lcg_pct:.2f}")
+    st.write(f"Froude Number (Fn): {Fn:.3f}")
+    st.write(f"Significant Wave Height to Beam Ratio (H1/3/B): {H13_B:.3f}")
+
+    # Load models and scalers
+    gpr_ncg_model = joblib.load('gpr_ncg_model.pkl')
+    etr_nbow_model = joblib.load('etr_nbow_model.pkl')
+    scaler_X1 = joblib.load('scaler_X1.pkl')
+    scaler_X2 = joblib.load('scaler_X2.pkl')
+
+    # Prepare input arrays for ML models
+    X1 = np.array([[beta, C_delta, lcg_pct, tau, Fn, H13_B]])
     X1_scaled = scaler_X1.transform(X1)
     pred_ncg = gpr_ncg_model.predict(X1_scaled)[0]
 
-    # Predict nBow (uses pred_ncg, but NOT fn)
-    X2 = np.array([[beta, cv, lcg, tao, h13b, pred_ncg]])
+    # For nBow, match the training order: [beta, C_delta, lcg_pct, tau, H13_B, pred_ncg]
+    X2 = np.array([[beta, C_delta, lcg_pct, tau, H13_B, pred_ncg]])
     X2_scaled = scaler_X2.transform(X2)
     pred_nbow = etr_nbow_model.predict(X2_scaled)[0]
 
-    st.success(f"Predicted nCG: {pred_ncg:.3f}")
-    st.success(f"Predicted nBow: {pred_nbow:.3f}")
+    st.success(f"Predicted nCG: {pred_ncg:.3f} g")
+    st.success(f"Predicted nBow: {pred_nbow:.3f} g")
 
     st.markdown("---")
-    st.write("Input parameters used:")
+    st.write("Inputs Used:")
     st.json({
-        "Beta": beta,
-        "Cv": cv,
-        "LCG": lcg,
-        "Tao": tao,
-        "H1/3/b": h13b,
-        "Froude Number": fn
+        "β [deg]": beta,
+        "Δ [kg]": disp,
+        "B [m]": beam,
+        "L [m]": L,
+        "LCG [%L]": lcg_pct,
+        "τ [deg]": tau,
+        "V [knots]": v_knots,
+        "H1/3 [m]": h13
     })
