@@ -23,7 +23,7 @@ with col1:
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
     speed_input = st.text_input("Speed list (knots)", value="25.4, 38.1, 50.8")
-    trim_input = st.text_input("Trim list (deg)", value="3.6, 3.5, 5.7")
+    trim_input = st.text_input("Trim list (deg)", value="3.6, 3.5, 2.7")
     predict_button = st.button("Predict")
 
     st.markdown("---")
