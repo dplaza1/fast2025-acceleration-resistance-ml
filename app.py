@@ -96,7 +96,7 @@ if predict_button:
             g1, g2 = st.columns(2)
 
             with g1:
-                fig1, ax1 = plt.subplots(figsize=(4, 3))
+                fig1, ax1 = plt.subplots(figsize=(1, 1))
                 ax1.scatter(speeds_np, ncg_np, color='blue')
                 ax1.set_xlabel("Speed [knots]")
                 ax1.set_ylabel("nCG [g]")
@@ -105,7 +105,7 @@ if predict_button:
                 st.pyplot(fig1)
 
             with g2:
-                fig2, ax2 = plt.subplots(figsize=(4, 3))
+                fig2, ax2 = plt.subplots(figsize=(1, 1))
                 ax2.scatter(speeds_np, nbow_np, color='orange')
                 ax2.set_xlabel("Speed [knots]")
                 ax2.set_ylabel("nBow [g]")
