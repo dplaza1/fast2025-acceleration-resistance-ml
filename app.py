@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
-import matplotlib.pyplot as plt  
+import matplotlib.pyplot as plt
 
 # Constants
 g = 9.81
@@ -87,30 +87,32 @@ if predict_button:
                 st.write(f"**LCG [%L]**: {lcg_pct:.2f}")
                 st.write(f"**H1/3 to Beam Ratio (H1/3/B)**: {H13_B:.3f}")
 
-            
+            # Graphs in two side-by-side columns
             st.header("Graphs")
-
             speeds_np = np.array([row["Speed [knots]"] for row in results])
             ncg_np = np.array([row["Predicted nCG [g]"] for row in results])
             nbow_np = np.array([row["Predicted nBow [g]"] for row in results])
 
-            # nCG scatter
-            fig1, ax1 = plt.subplots()
-            ax1.scatter(speeds_np, ncg_np, color='blue', label="nCG")
-            ax1.set_xlabel("Speed [knots]")
-            ax1.set_ylabel("nCG [g]")
-            ax1.set_title("Predicted nCG vs Speed")
-            ax1.grid(True)
-            st.pyplot(fig1)
+            g1, g2 = st.columns(2)
 
-            # nBow scatter
-            fig2, ax2 = plt.subplots()
-            ax2.scatter(speeds_np, nbow_np, color='orange', label="nBow")
-            ax2.set_xlabel("Speed [knots]")
-            ax2.set_ylabel("nBow [g]")
-            ax2.set_title("Predicted nBow vs Speed")
-            ax2.grid(True)
-            st.pyplot(fig2)
+            with g1:
+                fig1, ax1 = plt.subplots(figsize=(4, 3))
+                ax1.scatter(speeds_np, ncg_np, color='blue')
+                ax1.set_xlabel("Speed [knots]")
+                ax1.set_ylabel("nCG [g]")
+                ax1.set_title("nCG vs Speed")
+                ax1.grid(True)
+                st.pyplot(fig1)
+
+            with g2:
+                fig2, ax2 = plt.subplots(figsize=(4, 3))
+                ax2.scatter(speeds_np, nbow_np, color='orange')
+                ax2.set_xlabel("Speed [knots]")
+                ax2.set_ylabel("nBow [g]")
+                ax2.set_title("nBow vs Speed")
+                ax2.grid(True)
+                st.pyplot(fig2)
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
+
