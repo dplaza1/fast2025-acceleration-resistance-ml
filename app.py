@@ -17,12 +17,12 @@ st.markdown(
 )
 
 # Input fields for user to enter ship and wave parameters
-beta = st.number_input("Beta [degrees]", value=0.0, help="Wave encounter angle in degrees")
-cv = st.number_input("Cv [-]", value=0.0, help="Stability criterion (dimensionless)")
-lcg = st.number_input("LCG [%L]", value=0.0, help="Longitudinal center of gravity as % of length")
-tao = st.number_input("Tao [degrees]", value=0.0, help="Trim angle in degrees")
+beta = st.number_input("Beta [degrees]", value=0.0, help="Deadrise angle in the LCG (degrees)")
+cv = st.number_input("Cv [-]", value=0.0, help=" Displacement Coefficient (dimensionless)")
+lcg = st.number_input("LCG [%L]", value=0.0, help="Longitudinal center of gravity as (% of length)")
+tao = st.number_input("Tao [degrees]", value=0.0, help="Trim angle (degrees)")
 fn = st.number_input("Fn [-]", value=0.0, help="Froude number (dimensionless)")
-h13b = st.number_input("H1/3 /b [-]", value=0.0, help="Significant wave height to beam ratio")
+h13b = st.number_input("H1/3 /b [-]", value=0.0, help="Significant wave height to beam ratio (dimensionless)")
 ncg_input = st.number_input("ncg [g] for nBow prediction", value=0.0, help="Predicted or measured nCG value for nBow prediction")
 
 if st.button("Predict"):
