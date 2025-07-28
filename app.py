@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
-import altair as alt  # Para gráficos tipo scatter
+import altair as alt
 
 # Constants
 g = 9.81
@@ -87,7 +87,8 @@ if predict_button:
                 st.write(f"**LCG [%L]**: {lcg_pct:.2f}")
                 st.write(f"**H1/3 to Beam Ratio (H1/3/B)**: {H13_B:.3f}")
 
-            with col2:
+            # Charts (outside columns to avoid layout bugs)
+            with st.container():
                 st.header("Graphs")
 
                 df_plot = df_results.copy()
@@ -103,16 +104,24 @@ if predict_button:
                         x=alt.X('Speed [knots]:Q'),
                         y=alt.Y('Predicted nCG [g]:Q'),
                         tooltip=['Speed [knots]', 'Predicted nCG [g]']
-                    ).properties(title="Predicted nCG vs Speed", height=300)
+                    ).properties(
+                        title="Predicted nCG vs Speed",
+                        width=600,
+                        height=300
+                    )
 
                     chart_nbow = alt.Chart(df_plot).mark_point(filled=True, size=80, color='orange').encode(
                         x=alt.X('Speed [knots]:Q'),
                         y=alt.Y('Predicted nBow [g]:Q'),
                         tooltip=['Speed [knots]', 'Predicted nBow [g]']
-                    ).properties(title="Predicted nBow vs Speed", height=300)
+                    ).properties(
+                        title="Predicted nBow vs Speed",
+                        width=600,
+                        height=300
+                    )
 
-                    st.altair_chart(chart_ncg, use_container_width=True)
-                    st.altair_chart(chart_nbow, use_container_width=True)
+                    st.altair_chart(chart_ncg)
+                    st.altair_chart(chart_nbow)
                 else:
                     st.warning("Please enter at least one valid speed and prediction to show graphs.")
 
