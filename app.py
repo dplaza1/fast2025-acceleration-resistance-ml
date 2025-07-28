@@ -22,22 +22,21 @@ with col1:
     lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=42.0)
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
-    v_min, v_max = st.slider(
-        "Select range of ship speeds (V [knots])",
-        min_value=5.0, max_value=50.0, value=(25.0, 30.0), step=1.0
-    )
+    st.markdown("Enter a list of **speeds [knots]** (e.g. `24.5, 25.0, 26.2`):")
+    speed_input = st.text_input("Speed list (V [knots])")
 
-    speeds = list(np.arange(v_min, v_max + 0.1, 1.0))
-    st.markdown(f"Enter **{len(speeds)} trim values** (τ in degrees), separated by commas:")
+    st.markdown("Enter the corresponding **trim angles [deg]** (e.g. `3.0, 3.4, 3.6`):")
+    trim_input = st.text_input("Trim list (τ [deg])")
 
-    trim_input = st.text_input("Trim list (e.g. 3.1, 3.3, 3.6, 3.9, 4.1, 4.3)")
     predict_button = st.button("Predict")
 
 if predict_button:
     try:
-        tau_list = [float(x.strip()) for x in trim_input.split(",")]
-        if len(tau_list) != len(speeds):
-            st.error(f"Please enter exactly {len(speeds)} trim values.")
+        speeds = [float(x.strip()) for x in speed_input.split(",") if x.strip()]
+        tau_list = [float(x.strip()) for x in trim_input.split(",") if x.strip()]
+
+        if len(speeds) != len(tau_list):
+            st.error(f"Please enter the same number of speeds and trim values. You entered {len(speeds)} speeds and {len(tau_list)} trims.")
         else:
             # Load models
             gpr_ncg_model = joblib.load('gpr_ncg_model.pkl')
@@ -64,7 +63,7 @@ if predict_button:
                 pred_nbow = etr_nbow_model.predict(X2_scaled)[0]
 
                 results.append({
-                    "Speed [knots]": round(v_knots, 1),
+                    "Speed [knots]": round(v_knots, 2),
                     "Trim [deg]": round(tau, 2),
                     "Froude Number (Fn)": round(Fn, 3),
                     "Predicted nCG [g]": round(pred_ncg, 3),
@@ -75,7 +74,7 @@ if predict_button:
 
             with col2:
                 st.header("Prediction Results Table")
-                st.success("Prediction completed for selected speed and trim range.")
+                st.success("Prediction completed.")
                 st.dataframe(df_results)
 
                 csv = df_results.to_csv(index=False).encode('utf-8')
@@ -95,4 +94,4 @@ if predict_button:
                 st.line_chart(df_plot[["Predicted nBow [g]"]], use_container_width=True)
 
     except ValueError:
-        st.error("Please enter only numeric values separated by commas in the trim field.")
+        st.error("Please enter only numeric values separated by commas in both fields.")
