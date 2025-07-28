@@ -16,14 +16,14 @@ Enter the physical parameters of the vessel and sea state. The app will calculat
 # User physical inputs (in the requested order)
 st.header("Input Ship and Wave Parameters")
 
-L = st.number_input("Ship length, L [m]", min_value=5.0, value=24.384)
-beam = st.number_input("Chine beam, B [m]", min_value=1.0, value=7.3152)
+L = st.number_input("Ship length, L [m]", value=24.384)
+beam = st.number_input("Chine beam, B [m]", value=7.3152)
 beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=15.0)
-disp = st.number_input("Displacement, Δ [kg]", min_value=1000.0, value=84368.18)
+disp = st.number_input("Displacement, Δ [kg]",  value=84368.18)
 lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=42.0)
 v_knots = st.number_input("Ship speed, V [knots]", min_value=1.0, value=25.4)
 tau = st.number_input("Trim angle, τ [deg]", min_value=0.0, value=3.6)
-h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.1, value=1.40208)
+h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
 if st.button("Predict"):
     # Convert inputs
