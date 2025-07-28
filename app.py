@@ -90,13 +90,3 @@ if predict_button:
                 st.header("Graphs")
 
                 df_plot = df_results.copy()
-                df_plot["Speed [knots]"] = pd.to_numeric(df_plot["Speed [knots]"], errors="coerce")
-                df_plot = df_plot.dropna(subset=["Speed [knots]"])
-                df_plot = df_plot.sort_values("Speed [knots]")
-                df_plot.set_index("Speed [knots]", inplace=True)
-
-                st.line_chart(df_plot[["Predicted nCG [g]"]], use_container_width=True)
-                st.line_chart(df_plot[["Predicted nBow [g]"]], use_container_width=True)
-
-    except ValueError:
-        st.error("Please enter only numeric values separated by commas in both fields.")
