@@ -87,7 +87,7 @@ if predict_button:
                 st.write(f"**LCG [%L]**: {lcg_pct:.2f}")
                 st.write(f"**H1/3 to Beam Ratio (H1/3/B)**: {H13_B:.3f}")
 
-            # Graphs in two side-by-side columns
+            # 📊 Graphs in 2 side-by-side columns with controlled size
             st.header("Graphs")
             speeds_np = np.array([row["Speed [knots]"] for row in results])
             ncg_np = np.array([row["Predicted nCG [g]"] for row in results])
@@ -96,21 +96,23 @@ if predict_button:
             g1, g2 = st.columns(2)
 
             with g1:
-                fig1, ax1 = plt.subplots(figsize=(1, 1))
+                fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ax1.scatter(speeds_np, ncg_np, color='blue')
                 ax1.set_xlabel("Speed [knots]")
                 ax1.set_ylabel("nCG [g]")
                 ax1.set_title("nCG vs Speed")
                 ax1.grid(True)
+                fig1.tight_layout()
                 st.pyplot(fig1)
 
             with g2:
-                fig2, ax2 = plt.subplots(figsize=(1, 1))
+                fig2, ax2 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ax2.scatter(speeds_np, nbow_np, color='orange')
                 ax2.set_xlabel("Speed [knots]")
                 ax2.set_ylabel("nBow [g]")
                 ax2.set_title("nBow vs Speed")
                 ax2.grid(True)
+                fig2.tight_layout()
                 st.pyplot(fig2)
 
     except ValueError:
