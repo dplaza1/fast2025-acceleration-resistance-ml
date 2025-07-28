@@ -17,13 +17,13 @@ col1, col2 = st.columns(2)
 with col1:
     L = st.number_input("Ship length, L [m]", value=24.384)
     beam = st.number_input("Chine beam, B [m]", value=7.3152)
-    beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=15.0)
+    beta = st.number_input("Deadrise angle, β [°]", min_value=5.0, max_value=45.0, value=15.0)
     disp = st.number_input("Displacement, Δ [kg]", value=84368.18)
     lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=42.0)
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
 
-    speed_input = st.text_input("Speed list (knots)", value="25.4, 38.1, 50.8")
-    trim_input = st.text_input("Trim list (deg)", value="3.6, 3.5, 5.7")
+    speed_input = st.text_input("Speed list [knots]", value="25.4, 38.1, 50.8")
+    trim_input = st.text_input("Trim list [°]", value="3.6, 3.5, 5.7")
     predict_button = st.button("Predict")
 
     st.markdown("---")
@@ -34,7 +34,7 @@ with col1:
     coeff_data = {
         "Variable":      ["L/B [-]",    "β [°]",        "CΔ [-]",    "LCG [%L]",  "τ [°]",         "H1/3/B [-]"],
         "Value":         [f"{L_B:.3f}",  f"{beta:.1f}", f"{C_delta:.3f}", f"{lcg_pct:.1f}", "–", f"{H13_B:.3f}"],
-        "Min–Max Range": ["4.000–9.000","10.0–30.0","0.384–1.200","28.6–45.7","2.0–9.2","0.215–0.750"],
+        "Min–Max Range": ["4 – 9","10 – 30","0.384 – 1.200","28.6 – 45.7","2.0 – 9.2","0.215 – 0.750"],
     }
     df_coeff = pd.DataFrame(coeff_data)
     st.table(df_coeff)
