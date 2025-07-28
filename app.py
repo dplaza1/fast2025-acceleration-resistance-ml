@@ -78,52 +78,34 @@ if predict_button:
 
         # Results table
         with col2:
-            st.header("Prediction Results Table")
-            st.success("Prediction completed.")
-            st.dataframe(df_results, use_container_width=True)
-            csv = df_results.to_csv(index=False).encode('utf-8')
-            st.download_button("Download CSV", csv, "predictions.csv", "text/csv")
+        st.header("Prediction Results Table")
+    
 
-        # Parametric Coefficients table + Min/Max commentary
-        with col1:
-            st.subheader("Parametric Coefficients")
-            coeff_data = {
-                "Variable":      ["L/B [-]",    "β [°]",       "CΔ [-]",    "LCG [%L]",  "τ [°]",        "H1/3 / B [-]"],
-                "Value":         [f"{(L/beam):.3f}", f"{beta:.1f}", f"{C_delta:.3f}", f"{lcg_pct:.1f}", f"{tau_list[0]:.1f}", f"{H13_B:.3f}"],
-                "Min–Max Range": ["4.000–9.000","10.0–30.0","0.384–1.200","28.6–45.7","2.0–9.2","0.215–0.750"]
-            }
-            df_coeff = pd.DataFrame(coeff_data)
-            st.table(df_coeff)
-
-        # Graphs
-        st.header("Graphs")
-        speeds_np = np.array([r["Speed [knots]"] for r in results])
-        ncg_np    = np.array([r["Predicted nCG [g]"] for r in results])
-        nbow_np   = np.array([r["Predicted nBow [g]"] for r in results])
+        st.subheader("Graphs")              # o st.header, como prefieras
 
         g1, g2 = st.columns(2)
 
-        with g1:
-            fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
-            ax1.scatter(speeds_np, ncg_np, color='blue')
-            ax1.set_xlabel("Speed [knots]", fontsize=8)
-            ax1.set_ylabel("nCG [g]", fontsize=8)
-            ax1.set_title("nCG vs Speed", fontsize=9)
-            ax1.tick_params(labelsize=7)
-            ax1.grid(True)
-            fig1.tight_layout()
-            st.pyplot(fig1)
-
-        with g2:
-            fig2, ax2 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
-            ax2.scatter(speeds_np, nbow_np, color='orange')
-            ax2.set_xlabel("Speed [knots]", fontsize=8)
-            ax2.set_ylabel("nBow [g]", fontsize=8)
-            ax2.set_title("nBow vs Speed", fontsize=9)
-            ax2.tick_params(labelsize=7)
-            ax2.grid(True)
-            fig2.tight_layout()
-            st.pyplot(fig2)
+            with g1:
+                fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
+                ax1.scatter(speeds_np, ncg_np, color='blue')
+                ax1.set_xlabel("Speed [knots]", fontsize=8)
+                ax1.set_ylabel("nCG [g]", fontsize=8)
+                ax1.set_title("nCG vs Speed", fontsize=9)
+                ax1.tick_params(labelsize=7)
+                ax1.grid(True)
+                fig1.tight_layout()
+                st.pyplot(fig1)
+    
+            with g2:
+                fig2, ax2 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
+                ax2.scatter(speeds_np, nbow_np, color='orange')
+                ax2.set_xlabel("Speed [knots]", fontsize=8)
+                ax2.set_ylabel("nBow [g]", fontsize=8)
+                ax2.set_title("nBow vs Speed", fontsize=9)
+                ax2.tick_params(labelsize=7)
+                ax2.grid(True)
+                fig2.tight_layout()
+                st.pyplot(fig2)
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
