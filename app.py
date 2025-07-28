@@ -20,12 +20,12 @@ scaler_X2 = joblib.load('scaler_X2.pkl')
 # Inputs del usuario
 st.header("Ingrese los datos del buque y la ola")
 
-beta = st.number_input("Beta (grados)", min_value=0.0, max_value=180.0, value=10.0)
-cv = st.number_input("Cv", min_value=0.0, value=1.0)
-lcg = st.number_input("LCG", min_value=-10.0, max_value=10.0, value=0.0)
-tao = st.number_input("Tao", min_value=0.0, value=0.5)
-fn = st.number_input("Froude Number (Fn)", min_value=0.0, value=1.0)
-h13b = st.number_input("h13/b", min_value=0.0, value=0.1)
+beta = st.number_input("Beta [deg]", min_value=5.0, max_value=45.0, value=20.0)
+cv = st.number_input("Cv [-]", min_value=0.8, value=1.3)
+lcg = st.number_input("LCG [%L]", min_value=20.0, max_value=50.0, value=38.0)
+tao = st.number_input("Tao [deg]", min_value=1.0, value=3.6)
+fn = st.number_input("Froude Number [--", min_value=0.4, value=1.0)
+h13b = st.number_input("H1/3/b", min_value=0.10, value=0.43)
 
 if st.button("Predecir"):
     # Predicción de nCG
