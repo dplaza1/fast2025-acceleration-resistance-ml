@@ -17,7 +17,7 @@ col1, col2 = st.columns(2)
 with col1:
     L = st.number_input("Ship length, L [m]", value=1.79)
     beam = st.number_input("Chine beam, B [m]", value=0.382)
-    beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=22.0)
+    beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=19.0)
     disp = st.number_input("Displacement, Δ [kg]", value=35.42)
     lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=38.0)
     h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=0.102)
