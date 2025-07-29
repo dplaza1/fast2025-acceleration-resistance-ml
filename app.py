@@ -5,7 +5,6 @@ import joblib
 import matplotlib.pyplot as plt
 
 g = 9.81
-w = 1025
 knots_to_ms = 0.514444
 m_to_ft = 3.28084
 
@@ -15,6 +14,12 @@ st.title("Prediction of nCG and nBow for Planing Hulls")
 col1, col2 = st.columns(2)
 
 with col1:
+    water_type = st.selectbox(
+        "Water density",
+        ("Freshwater (1000 kg/m³)", "Seawater (1025 kg/m³)")
+    )
+    w = 1000 if "Freshwater" in water_type else 1025
+
     L = st.number_input("Ship length, L [m]", value=1.79)
     beam = st.number_input("Chine beam, B [m]", value=0.382)
     beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=19.0)
@@ -136,7 +141,7 @@ if predict_button:
                     marker='s',
                     facecolors='none',
                     edgecolors='navy',
-                    label='ML – Extra Trees Regressor'
+                    label='Extra Trees Regressor'
                 )
                 ax2.scatter(
                     speeds_np,
