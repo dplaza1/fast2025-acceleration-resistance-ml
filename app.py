@@ -133,10 +133,10 @@ if predict_button:
                 ax2.scatter(
                     speeds_np,
                     ml_nbow,
-                    marker='o',
+                    marker='s',
                     facecolors='none',
-                    edgecolors='red',
-                    label='ML – Gaussian Process Regressor'
+                    edgecolors='navy',
+                    label='Extra Trees Regressor'
                 )
                 ax2.scatter(
                     speeds_np,
