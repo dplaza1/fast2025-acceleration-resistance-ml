@@ -15,15 +15,15 @@ st.title("Prediction of nCG and nBow for Planing Hulls ")
 col1, col2 = st.columns(2)
 
 with col1:
-    L = st.number_input("Ship length, L [m]", value=24.384)
-    beam = st.number_input("Chine beam, B [m]", value=7.3152)
-    beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=15.0)
-    disp = st.number_input("Displacement, Δ [kg]", value=84368.18)
-    lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=42.0)
-    h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=1.40208)
+    L = st.number_input("Ship length, L [m]", value=1.79)
+    beam = st.number_input("Chine beam, B [m]", value=0.382)
+    beta = st.number_input("Deadrise angle, β [deg]", min_value=5.0, max_value=45.0, value=22.0)
+    disp = st.number_input("Displacement, Δ [kg]", value=34.47)
+    lcg_pct = st.number_input("Longitudinal center of gravity, LCG [%L]", min_value=0.0, max_value=100.0, value=38.0)
+    h13 = st.number_input("Significant wave height, H1/3 [m]", min_value=0.0, value=0.102)
 
-    speed_input = st.text_input("Speed list (knots)", value="25.4, 38.1, 50.8")
-    trim_input = st.text_input("Trim list (deg)", value="3.6, 3.5, 2.7")
+    speed_input = st.text_input("Speed list (knots)", value="4.806, 9.694, 14.504")
+    trim_input = st.text_input("Trim list (deg)", value="3.9, 5.81, 4.38")
     predict_button = st.button("Predict")
 
     st.markdown("---")
