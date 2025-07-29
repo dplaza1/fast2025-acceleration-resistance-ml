@@ -10,7 +10,7 @@ knots_to_ms = 0.514444
 m_to_ft = 3.28084
 
 st.set_page_config(layout="wide")
-st.title("Prediction of nCG and nBow for Planing Hulls ")
+st.title("Prediction of nCG and nBow for Planing Hulls")
 
 col1, col2 = st.columns(2)
 
@@ -26,7 +26,6 @@ with col1:
     trim_input = st.text_input("Trim list (deg)", value="3.9, 5.81, 4.38")
     predict_button = st.button("Predict")
 
-    st.markdown("---")
     L_B = L / beam
     C_delta = disp / (w * beam ** 3)
     H13_B = h13 / beam
@@ -103,8 +102,22 @@ if predict_button:
             g1, g2 = st.columns(2)
             with g1:
                 fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
-                ax1.scatter(speeds_np, ml_ncg, color='blue', label='ML')
-                ax1.scatter(speeds_np, sav_ncg, color='red', marker='x', label='Savitsky')
+                ax1.scatter(
+                    speeds_np,
+                    ml_ncg,
+                    marker='o',
+                    facecolors='none',
+                    edgecolors='red',
+                    label='ML – Gaussian Process Regressor'
+                )
+                ax1.scatter(
+                    speeds_np,
+                    sav_ncg,
+                    marker='^',
+                    facecolors='none',
+                    edgecolors='green',
+                    label='Savit & Brown'
+                )
                 ax1.set_xlabel("Speed [knots]", fontsize=8)
                 ax1.set_ylabel("nCG [g]", fontsize=8)
                 ax1.set_title("nCG vs Speed", fontsize=9)
@@ -117,8 +130,22 @@ if predict_button:
                 fig2, ax2 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ml_nbow = df_res["Pred nBow ML [g]"].values
                 sav_nbow = df_res["Pred nBow Sav [g]"].values
-                ax2.scatter(speeds_np, ml_nbow, color='orange', label='ML')
-                ax2.scatter(speeds_np, sav_nbow, color='green', marker='x', label='Savitsky')
+                ax2.scatter(
+                    speeds_np,
+                    ml_nbow,
+                    marker='o',
+                    facecolors='none',
+                    edgecolors='red',
+                    label='ML – Gaussian Process Regressor'
+                )
+                ax2.scatter(
+                    speeds_np,
+                    sav_nbow,
+                    marker='^',
+                    facecolors='none',
+                    edgecolors='green',
+                    label='Savit & Brown'
+                )
                 ax2.set_xlabel("Speed [knots]", fontsize=8)
                 ax2.set_ylabel("nBow [g]", fontsize=8)
                 ax2.set_title("nBow vs Speed", fontsize=9)
@@ -129,4 +156,3 @@ if predict_button:
 
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
-
