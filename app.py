@@ -136,7 +136,7 @@ if predict_button:
                     marker='s',
                     facecolors='none',
                     edgecolors='navy',
-                    label='Extra Trees Regressor'
+                    label='ML – Extra Trees Regressor'
                 )
                 ax2.scatter(
                     speeds_np,
