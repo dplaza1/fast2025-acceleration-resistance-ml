@@ -121,7 +121,7 @@ if predict_button:
                     marker='^',
                     facecolors='none',
                     edgecolors='green',
-                    label='Savit & Brown'
+                    label='Sav&Brown'
                 )
                 ax1.set_xlabel("Speed [knots]", fontsize=8)
                 ax1.set_ylabel("nCG [g]", fontsize=8)
@@ -141,7 +141,7 @@ if predict_button:
                     marker='s',
                     facecolors='none',
                     edgecolors='navy',
-                    label='Extra Trees Regressor'
+                    label='ML – Extra Trees Regressor'
                 )
                 ax2.scatter(
                     speeds_np,
@@ -149,7 +149,7 @@ if predict_button:
                     marker='^',
                     facecolors='none',
                     edgecolors='green',
-                    label='Savit & Brown'
+                    label='Sav&Brown'
                 )
                 ax2.set_xlabel("Speed [knots]", fontsize=8)
                 ax2.set_ylabel("nBow [g]", fontsize=8)
