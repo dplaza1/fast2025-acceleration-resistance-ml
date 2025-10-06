@@ -37,8 +37,10 @@ X3_scaled = scaler_X3.fit_transform(X3)
 # Split into train and test sets
 X_train1, X_test1, Y_train1, Y_test1 = train_test_split(X1_scaled, Y1, test_size=0.2, random_state=42)
 X_train2, X_test2, Y_train2, Y_test2 = train_test_split(X2_scaled, Y2, test_size=0.2, random_state=42)
-Y3=100*Y3
 X_train3, X_test3, Y_train3, Y_test3 = train_test_split(X3_scaled, Y3, test_size=0.2, random_state=42)
+
+Y_train3=100*Y_train3
+Y_test3=100*Y_test3
 
 # Define and train models
 kernel = C(1.0, (1e-2, 1e4)) * RBF(length_scale=1.0, length_scale_bounds=(1e-1, 100)) + WhiteKernel(noise_level=1e-5, noise_level_bounds=(1e-8, 1.0))
