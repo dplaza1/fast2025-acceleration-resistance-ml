@@ -9,7 +9,7 @@ knots_to_ms = 0.514444
 m_to_ft = 3.28084
 
 st.set_page_config(layout="wide")
-st.title("Prediction of nCG and nBow for Planing Hulls")
+st.title("Prediction of nCG, nBow and Added Resistance for Planing Hulls")
 
 col1, col2 = st.columns(2)
 
@@ -52,10 +52,14 @@ if predict_button:
             st.error("Speeds and trims must have the same length.")
             st.stop()
 
+        # Load models and scalers
         gpr_ncg = joblib.load('gpr_ncg_model.pkl')
         etr_nbow = joblib.load('etr_nbow_model.pkl')
         scaler1 = joblib.load('scaler_X1.pkl')
         scaler2 = joblib.load('scaler_X2.pkl')
+        etr_addre = joblib.load('etr_addre_model.pkl')
+        svr_addre = joblib.load('svr_addre_model.pkl')
+        scaler3 = joblib.load('scaler_X3.pkl')
 
         results = []
         L_ft = L * m_to_ft
@@ -64,11 +68,21 @@ if predict_button:
             v = v_knots * knots_to_ms
             Fn = v / np.sqrt(g * L)
 
+            # nCG prediction (ML)
             X1 = np.array([[beta, C_delta, lcg_pct, tau, Fn, H13_B]])
             y1_ml = gpr_ncg.predict(scaler1.transform(X1))[0]
+
+            # nBow prediction (ML)
             X2 = np.array([[beta, C_delta, lcg_pct, tau, H13_B, y1_ml]])
             y2_ml = etr_nbow.predict(scaler2.transform(X2))[0]
 
+            # Added Resistance (ML: ETR and SVR)
+            X3 = np.array([[beta, C_delta, tau, Fn, H13_B]])
+            X3_scaled = scaler3.transform(X3)
+            ra_etr = etr_addre.predict(X3_scaled)[0]
+            ra_svr = svr_addre.predict(X3_scaled)[0]
+
+            # Savitsky & Brown (Classical) predictions
             Vk_sqrtL = v_knots / np.sqrt(L_ft)
             nCG_sav = (0.0104 *
                        (H13_B + 0.084) *
@@ -87,6 +101,8 @@ if predict_button:
                 "Pred nBow ML [g]":   round(y2_ml, 3),
                 "Pred nCG Sav [g]":   round(nCG_sav, 3),
                 "Pred nBow Sav [g]":  round(nBow_sav, 3),
+                "Added Resistance ETR [-]": round(ra_etr, 4),
+                "Added Resistance SVR [-]": round(ra_svr, 4),
             })
 
         df_res = pd.DataFrame(results)
@@ -104,7 +120,7 @@ if predict_button:
             ml_ncg = df_res["Pred nCG ML [g]"].values
             sav_ncg = df_res["Pred nCG Sav [g]"].values
 
-            g1, g2 = st.columns(2)
+            g1, g2, g3 = st.columns(3)
             with g1:
                 fig1, ax1 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
                 ax1.scatter(
@@ -159,5 +175,34 @@ if predict_button:
                 fig2.tight_layout()
                 st.pyplot(fig2)
 
+            with g3:
+                fig3, ax3 = plt.subplots(figsize=(3.5, 2.5), dpi=100)
+                ar_etr = df_res["Added Resistance ETR [-]"].values
+                ar_svr = df_res["Added Resistance SVR [-]"].values
+                ax3.scatter(
+                    speeds_np,
+                    ar_etr,
+                    marker='o',
+                    facecolors='none',
+                    edgecolors='purple',
+                    label='ETR'
+                )
+                ax3.scatter(
+                    speeds_np,
+                    ar_svr,
+                    marker='s',
+                    facecolors='none',
+                    edgecolors='orange',
+                    label='SVR'
+                )
+                ax3.set_xlabel("Speed [knots]", fontsize=8)
+                ax3.set_ylabel("Added Resistance [-]", fontsize=8)
+                ax3.set_title("Added Resistance vs Speed", fontsize=9)
+                ax3.legend(fontsize=6)
+                ax3.grid(True)
+                fig3.tight_layout()
+                st.pyplot(fig3)
+
     except ValueError:
         st.error("Please enter only numeric values separated by commas in both fields.")
+
