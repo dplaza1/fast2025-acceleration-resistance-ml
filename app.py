@@ -76,11 +76,11 @@ if predict_button:
             X2 = np.array([[beta, C_delta, lcg_pct, tau, H13_B, y1_ml]])
             y2_ml = etr_nbow.predict(scaler2.transform(X2))[0]
 
-            # Added Resistance (ML: ETR and SVR)
+            # Added Resistance (ML: ETR and SVR) - divide by 100 to reverse training scaling
             X3 = np.array([[beta, C_delta, tau, Fn, H13_B]])
             X3_scaled = scaler3.transform(X3)
-            ra_etr = etr_addre.predict(X3_scaled)[0]
-            ra_svr = svr_addre.predict(X3_scaled)[0]
+            ra_etr = etr_addre.predict(X3_scaled)[0] / 100
+            ra_svr = svr_addre.predict(X3_scaled)[0] / 100
 
             # Savitsky & Brown (Classical) predictions
             Vk_sqrtL = v_knots / np.sqrt(L_ft)
